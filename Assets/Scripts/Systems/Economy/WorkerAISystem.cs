@@ -54,12 +54,12 @@ namespace DotsRTS.Systems.Economy
                 return;
             }
 
-            var resourceHash = new NativeMultiHashMap<int, ResourceNodeInfo>(
+            var resourceHash = new NativeParallelMultiHashMap<int, ResourceNodeInfo>(
                 resourceCount,
                 Allocator.TempJob
             );
 
-            var depositHash = new NativeMultiHashMap<int, DepositInfo>(
+            var depositHash = new NativeParallelMultiHashMap<int, DepositInfo>(
                 depositCount,
                 Allocator.TempJob
             );
@@ -140,7 +140,7 @@ namespace DotsRTS.Systems.Economy
     [BurstCompile]
     public partial struct BuildResourceHashJob : IJobEntity
     {
-        public NativeMultiHashMap<int, ResourceNodeInfo>.ParallelWriter ResourceHash;
+        public NativeParallelMultiHashMap<int, ResourceNodeInfo>.ParallelWriter ResourceHash;
         public int CellSize;
 
         [BurstCompile]
@@ -174,7 +174,7 @@ namespace DotsRTS.Systems.Economy
     [BurstCompile]
     public partial struct BuildDepositHashJob : IJobEntity
     {
-        public NativeMultiHashMap<int, DepositInfo>.ParallelWriter DepositHash;
+        public NativeParallelMultiHashMap<int, DepositInfo>.ParallelWriter DepositHash;
         public int CellSize;
 
         [BurstCompile]
@@ -210,8 +210,8 @@ namespace DotsRTS.Systems.Economy
     {
         public float DeltaTime;
         public float CurrentTime;
-        [ReadOnly] public NativeMultiHashMap<int, ResourceNodeInfo> ResourceHash;
-        [ReadOnly] public NativeMultiHashMap<int, DepositInfo> DepositHash;
+        [ReadOnly] public NativeParallelMultiHashMap<int, ResourceNodeInfo> ResourceHash;
+        [ReadOnly] public NativeParallelMultiHashMap<int, DepositInfo> DepositHash;
         public int CellSize;
         public float SearchRadius;
         public EntityCommandBuffer.ParallelWriter ECB;
