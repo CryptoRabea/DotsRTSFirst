@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using DotsRTS.Components.Movement;
 using DotsRTS.Bootstrap;
+using MovementComponent = DotsRTS.Components.Movement.Movement;
 
 namespace DotsRTS.Systems.Movement
 {
@@ -50,7 +51,7 @@ namespace DotsRTS.Systems.Movement
         public float DeltaTime;
 
         [BurstCompile]
-        private void Execute(ref LocalTransform transform, in Movement movement)
+        private void Execute(ref LocalTransform transform, in MovementComponent movement)
         {
             // Apply velocity to position
             if (math.lengthsq(movement.Velocity) > 0.001f)

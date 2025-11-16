@@ -55,8 +55,15 @@ namespace DotsRTS.Systems.AI
                 Allocator.TempJob
             );
 
-            // Build target spatial hash
-            new BuildTargetHashJob
+            // Build target spatial hash for units
+            new BuildUnitTargetHashJob
+            {
+                TargetHash = targetHash.AsParallelWriter(),
+                CellSize = CELL_SIZE
+            }.ScheduleParallel();
+
+            // Build target spatial hash for buildings
+            new BuildBuildingTargetHashJob
             {
                 TargetHash = targetHash.AsParallelWriter(),
                 CellSize = CELL_SIZE
@@ -98,10 +105,10 @@ namespace DotsRTS.Systems.AI
     }
 
     /// <summary>
-    /// Build spatial hash of potential targets
+    /// Build spatial hash of unit targets
     /// </summary>
     [BurstCompile]
-    public partial struct BuildTargetHashJob : IJobEntity
+    public partial struct BuildUnitTargetHashJob : IJobEntity
     {
         public NativeMultiHashMap<int, TargetInfo>.ParallelWriter TargetHash;
         public int CellSize;
@@ -130,6 +137,16 @@ namespace DotsRTS.Systems.AI
                 IsBuilding = false
             });
         }
+    }
+
+    /// <summary>
+    /// Build spatial hash of building targets
+    /// </summary>
+    [BurstCompile]
+    public partial struct BuildBuildingTargetHashJob : IJobEntity
+    {
+        public NativeMultiHashMap<int, TargetInfo>.ParallelWriter TargetHash;
+        public int CellSize;
 
         [BurstCompile]
         private void Execute(

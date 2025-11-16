@@ -10,6 +10,7 @@ using DotsRTS.Components.Movement;
 using DotsRTS.Bootstrap;
 using DotsRTS.Utilities;
 using UnityEngine;
+using Random = Unity.Mathematics.Random;
 
 namespace DotsRTS.Systems.GameState
 {

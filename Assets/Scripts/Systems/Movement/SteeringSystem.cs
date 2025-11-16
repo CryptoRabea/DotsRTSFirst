@@ -6,6 +6,7 @@ using Unity.Transforms;
 using DotsRTS.Components.Movement;
 using DotsRTS.Bootstrap;
 using DotsRTS.Utilities;
+using MovementComponent = DotsRTS.Components.Movement.Movement;
 
 namespace DotsRTS.Systems.Movement
 {
@@ -96,7 +97,7 @@ namespace DotsRTS.Systems.Movement
         public int CellSize;
 
         [BurstCompile]
-        private void Execute(Entity entity, in LocalTransform transform, in Movement movement)
+        private void Execute(Entity entity, in LocalTransform transform, in MovementComponent movement)
         {
             // Calculate cell hash
             int cellX = (int)math.floor(transform.Position.x / CellSize);
@@ -128,7 +129,7 @@ namespace DotsRTS.Systems.Movement
         private void Execute(
             Entity entity,
             in LocalTransform transform,
-            ref Movement movement,
+            ref MovementComponent movement,
             in Steering steering)
         {
             float3 position = transform.Position;

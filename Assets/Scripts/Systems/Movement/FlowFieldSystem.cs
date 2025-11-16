@@ -7,6 +7,7 @@ using DotsRTS.Components.Movement;
 using DotsRTS.Bootstrap;
 using DotsRTS.Utilities;
 using DotsRTS.Config;
+using MovementComponent = DotsRTS.Components.Movement.Movement;
 
 namespace DotsRTS.Systems.Movement
 {
@@ -131,7 +132,7 @@ namespace DotsRTS.Systems.Movement
         private void Execute(
             in LocalTransform transform,
             ref FlowFieldAgent agent,
-            ref Movement movement)
+            ref MovementComponent movement)
         {
             if (!agent.UseFlowField) return;
 

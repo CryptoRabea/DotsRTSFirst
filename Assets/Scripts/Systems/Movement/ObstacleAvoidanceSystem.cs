@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using DotsRTS.Components.Movement;
 using DotsRTS.Bootstrap;
+using MovementComponent = DotsRTS.Components.Movement.Movement;
 
 namespace DotsRTS.Systems.Movement
 {
@@ -124,7 +125,7 @@ namespace DotsRTS.Systems.Movement
         [BurstCompile]
         private void Execute(
             in LocalTransform transform,
-            ref Movement movement,
+            ref MovementComponent movement,
             in Avoidance avoidance)
         {
             if (!avoidance.AvoidBuildings) return;
