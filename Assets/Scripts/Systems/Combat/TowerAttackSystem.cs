@@ -39,7 +39,7 @@ namespace DotsRTS.Systems.Combat
             var enemyCount = enemyQuery.CalculateEntityCount();
             if (enemyCount == 0) return;
 
-            var enemyHash = new NativeMultiHashMap<int, EnemyInfo>(
+            var enemyHash = new NativeParallelMultiHashMap<int, EnemyInfo>(
                 enemyCount,
                 Allocator.TempJob
             );
@@ -153,7 +153,7 @@ namespace DotsRTS.Systems.Combat
             ref SystemState state,
             ref TowerData towerData,
             float3 towerPosition,
-            NativeMultiHashMap<int, EnemyInfo> enemyHash,
+            NativeParallelMultiHashMap<int, EnemyInfo> enemyHash,
             int cellSize)
         {
             Entity closestEnemy = Entity.Null;
@@ -242,7 +242,7 @@ namespace DotsRTS.Systems.Combat
     [BurstCompile]
     public partial struct BuildEnemyHashJob : IJobEntity
     {
-        public NativeMultiHashMap<int, EnemyInfo>.ParallelWriter EnemyHash;
+        public NativeParallelMultiHashMap<int, EnemyInfo>.ParallelWriter EnemyHash;
         public int CellSize;
 
         [BurstCompile]

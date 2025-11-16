@@ -50,7 +50,7 @@ namespace DotsRTS.Systems.AI
                 return;
             }
 
-            var targetHash = new NativeMultiHashMap<int, TargetInfo>(
+            var targetHash = new NativeParallelMultiHashMap<int, TargetInfo>(
                 targetCount,
                 Allocator.TempJob
             );
@@ -110,7 +110,7 @@ namespace DotsRTS.Systems.AI
     [BurstCompile]
     public partial struct BuildUnitTargetHashJob : IJobEntity
     {
-        public NativeMultiHashMap<int, TargetInfo>.ParallelWriter TargetHash;
+        public NativeParallelMultiHashMap<int, TargetInfo>.ParallelWriter TargetHash;
         public int CellSize;
 
         [BurstCompile]
@@ -145,7 +145,7 @@ namespace DotsRTS.Systems.AI
     [BurstCompile]
     public partial struct BuildBuildingTargetHashJob : IJobEntity
     {
-        public NativeMultiHashMap<int, TargetInfo>.ParallelWriter TargetHash;
+        public NativeParallelMultiHashMap<int, TargetInfo>.ParallelWriter TargetHash;
         public int CellSize;
 
         [BurstCompile]
@@ -186,7 +186,7 @@ namespace DotsRTS.Systems.AI
     {
         public float DeltaTime;
         public float CurrentTime;
-        [ReadOnly] public NativeMultiHashMap<int, TargetInfo> TargetHash;
+        [ReadOnly] public NativeParallelMultiHashMap<int, TargetInfo> TargetHash;
         public int CellSize;
         public float SearchRadius;
 

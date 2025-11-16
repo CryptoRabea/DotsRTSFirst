@@ -43,7 +43,7 @@ namespace DotsRTS.Systems.Movement
             if (entityCount == 0) return;
 
             // Create spatial hash for this frame
-            var spatialHash = new NativeMultiHashMap<int, EntityPositionData>(
+            var spatialHash = new NativeParallelMultiHashMap<int, EntityPositionData>(
                 entityCount,
                 Allocator.TempJob
             );
@@ -93,7 +93,7 @@ namespace DotsRTS.Systems.Movement
     [BurstCompile]
     public partial struct BuildSpatialHashJob : IJobEntity
     {
-        public NativeMultiHashMap<int, EntityPositionData>.ParallelWriter SpatialHash;
+        public NativeParallelMultiHashMap<int, EntityPositionData>.ParallelWriter SpatialHash;
         public int CellSize;
 
         [BurstCompile]
@@ -121,7 +121,7 @@ namespace DotsRTS.Systems.Movement
     public partial struct ApplySteeringJob : IJobEntity
     {
         public float DeltaTime;
-        [ReadOnly] public NativeMultiHashMap<int, EntityPositionData> SpatialHash;
+        [ReadOnly] public NativeParallelMultiHashMap<int, EntityPositionData> SpatialHash;
         public int CellSize;
         public float NeighborRadius;
 

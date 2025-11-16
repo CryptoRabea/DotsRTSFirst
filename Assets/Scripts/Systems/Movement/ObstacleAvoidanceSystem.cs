@@ -40,7 +40,7 @@ namespace DotsRTS.Systems.Movement
             var obstacleCount = obstacleQuery.CalculateEntityCount();
             if (obstacleCount == 0) return;
 
-            var obstacleHash = new NativeMultiHashMap<int, ObstacleInfo>(
+            var obstacleHash = new NativeParallelMultiHashMap<int, ObstacleInfo>(
                 obstacleCount,
                 Allocator.TempJob
             );
@@ -89,7 +89,7 @@ namespace DotsRTS.Systems.Movement
     [BurstCompile]
     public partial struct BuildObstacleHashJob : IJobEntity
     {
-        public NativeMultiHashMap<int, ObstacleInfo>.ParallelWriter ObstacleHash;
+        public NativeParallelMultiHashMap<int, ObstacleInfo>.ParallelWriter ObstacleHash;
         public int CellSize;
 
         [BurstCompile]
@@ -119,7 +119,7 @@ namespace DotsRTS.Systems.Movement
     public partial struct AvoidObstaclesJob : IJobEntity
     {
         public float DeltaTime;
-        [ReadOnly] public NativeMultiHashMap<int, ObstacleInfo> ObstacleHash;
+        [ReadOnly] public NativeParallelMultiHashMap<int, ObstacleInfo> ObstacleHash;
         public int CellSize;
 
         [BurstCompile]
