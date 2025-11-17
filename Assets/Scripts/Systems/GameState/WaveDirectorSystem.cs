@@ -11,6 +11,7 @@ using DotsRTS.Bootstrap;
 using DotsRTS.Utilities;
 using UnityEngine;
 using Random = Unity.Mathematics.Random;
+using MovementComponent = DotsRTS.Components.Movement.Movement;
 
 namespace DotsRTS.Systems.GameState
 {
@@ -268,7 +269,7 @@ namespace DotsRTS.Systems.GameState
                 LastDamageTime = 0f
             });
 
-            ecb.AddComponent(enemy, new Movement
+            ecb.AddComponent(enemy, new MovementComponent
             {
                 Velocity = float3.zero,
                 MoveSpeed = finalSpeed,

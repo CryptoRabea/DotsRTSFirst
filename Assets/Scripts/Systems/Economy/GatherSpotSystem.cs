@@ -31,10 +31,13 @@ namespace DotsRTS.Systems.Economy
         public void OnUpdate(ref SystemState state)
         {
             // First pass: Clear invalid spot occupants (dead workers, workers that moved away)
-            foreach (var (resourceNode, gatherSpots, transform, entity) in
-                SystemAPI.Query<RefRO<ResourceNode>, DynamicBuffer<GatherSpot>, RefRO<LocalTransform>>()
+            foreach (var (resourceNode, transform, entity) in
+                SystemAPI.Query<RefRO<ResourceNode>, RefRO<LocalTransform>>()
+                    .WithAll<DynamicBuffer<GatherSpot>>()
                     .WithEntityAccess())
             {
+                var gatherSpots = SystemAPI.GetBuffer<GatherSpot>(entity);
+
                 for (int i = 0; i < gatherSpots.Length; i++)
                 {
                     var spot = gatherSpots[i];
