@@ -4,6 +4,7 @@ using Unity.Entities;
 using Unity.Mathematics;
 using DotsRTS.Components.Combat;
 using DotsRTS.Bootstrap;
+using DotsRTS.Utilities;
 
 namespace DotsRTS.Systems.Combat
 {

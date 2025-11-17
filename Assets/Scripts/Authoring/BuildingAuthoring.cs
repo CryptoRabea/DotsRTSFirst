@@ -5,6 +5,7 @@ using DotsRTS.Components.Buildings;
 using DotsRTS.Components.Combat;
 using DotsRTS.Components.Resources;
 using DotsRTS.Components.Movement;
+using DotsRTS.Components.GameState;
 
 namespace DotsRTS.Authoring
 {

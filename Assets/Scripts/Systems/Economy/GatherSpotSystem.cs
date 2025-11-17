@@ -7,6 +7,7 @@ using DotsRTS.Components.Resources;
 using DotsRTS.Components.Units;
 using DotsRTS.Components.Movement;
 using DotsRTS.Bootstrap;
+using DotsRTS.Utilities;
 
 namespace DotsRTS.Systems.Economy
 {
@@ -30,13 +31,13 @@ namespace DotsRTS.Systems.Economy
         public void OnUpdate(ref SystemState state)
         {
             // First pass: Clear invalid spot occupants (dead workers, workers that moved away)
-            foreach (var (resourceNode, buffer, transform, entity) in
+            foreach (var (resourceNode, gatherSpots, transform, entity) in
                 SystemAPI.Query<RefRO<ResourceNode>, DynamicBuffer<GatherSpot>, RefRO<LocalTransform>>()
                     .WithEntityAccess())
             {
-                for (int i = 0; i < buffer.Length; i++)
+                for (int i = 0; i < gatherSpots.Length; i++)
                 {
-                    var spot = buffer[i];
+                    var spot = gatherSpots[i];
 
                     if (spot.IsOccupied && spot.Occupant != Entity.Null)
                     {
@@ -48,7 +49,7 @@ namespace DotsRTS.Systems.Economy
                             // Free the spot
                             spot.IsOccupied = false;
                             spot.Occupant = Entity.Null;
-                            buffer[i] = spot;
+                            gatherSpots[i] = spot;
                         }
                     }
                 }

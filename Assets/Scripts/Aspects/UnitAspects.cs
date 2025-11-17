@@ -36,11 +36,11 @@ namespace DotsRTS.Aspects
             m_Movement.ValueRW.Velocity = velocity;
         }
 
-        public void TakeDamage(float amount)
+        public void TakeDamage(float amount, float currentTime)
         {
             m_Health.ValueRW.Current = math.max(0, m_Health.ValueRO.Current - amount);
             m_Health.ValueRW.IsDead = m_Health.ValueRO.Current <= 0;
-            m_Health.ValueRW.LastDamageTime = (float)SystemAPI.Time.ElapsedTime;
+            m_Health.ValueRW.LastDamageTime = currentTime;
         }
 
         public void Heal(float amount)
@@ -148,11 +148,11 @@ namespace DotsRTS.Aspects
             m_Movement.ValueRW.Velocity = velocity;
         }
 
-        public void TakeDamage(float amount)
+        public void TakeDamage(float amount, float currentTime)
         {
             m_Health.ValueRW.Current = math.max(0, m_Health.ValueRO.Current - amount);
             m_Health.ValueRW.IsDead = m_Health.ValueRO.Current <= 0;
-            m_Health.ValueRW.LastDamageTime = (float)SystemAPI.Time.ElapsedTime;
+            m_Health.ValueRW.LastDamageTime = currentTime;
         }
     }
 }

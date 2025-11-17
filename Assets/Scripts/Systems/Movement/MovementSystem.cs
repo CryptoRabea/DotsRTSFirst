@@ -5,6 +5,7 @@ using Unity.Mathematics;
 using Unity.Transforms;
 using DotsRTS.Components.Movement;
 using DotsRTS.Bootstrap;
+using DotsRTS.Utilities;
 using MovementComponent = DotsRTS.Components.Movement.Movement;
 
 namespace DotsRTS.Systems.Movement

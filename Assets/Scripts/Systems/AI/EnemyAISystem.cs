@@ -126,7 +126,7 @@ namespace DotsRTS.Systems.AI
 
             int cellX = (int)math.floor(transform.Position.x / CellSize);
             int cellZ = (int)math.floor(transform.Position.z / CellSize);
-            int hash = TargetHash.GetHashCode(new int2(cellX, cellZ));
+            int hash = (int)math.hash(new int2(cellX, cellZ));
 
             TargetHash.Add(hash, new TargetInfo
             {
@@ -162,7 +162,7 @@ namespace DotsRTS.Systems.AI
 
             int cellX = (int)math.floor(transform.Position.x / CellSize);
             int cellZ = (int)math.floor(transform.Position.z / CellSize);
-            int hash = TargetHash.GetHashCode(new int2(cellX, cellZ));
+            int hash = (int)math.hash(new int2(cellX, cellZ));
 
             // Buildings have higher threat for siege units
             float threatLevel = buildingData.Type == BuildingType.Headquarters ? 10f : 1f;
@@ -278,7 +278,7 @@ namespace DotsRTS.Systems.AI
             {
                 for (int z = -searchCells; z <= searchCells; z++)
                 {
-                    int hash = TargetHash.GetHashCode(new int2(cellX + x, cellZ + z));
+                    int hash = (int)math.hash(new int2(cellX + x, cellZ + z));
 
                     if (TargetHash.TryGetFirstValue(hash, out var target, out var iterator))
                     {

@@ -102,7 +102,7 @@ namespace DotsRTS.Systems.Movement
             // Calculate cell hash
             int cellX = (int)math.floor(transform.Position.x / CellSize);
             int cellZ = (int)math.floor(transform.Position.z / CellSize);
-            int hash = SpatialHash.GetHashCode(new int2(cellX, cellZ));
+            int hash = (int)math.hash(new int2(cellX, cellZ));
 
             // Add to spatial hash
             SpatialHash.Add(hash, new EntityPositionData
@@ -148,7 +148,7 @@ namespace DotsRTS.Systems.Movement
             {
                 for (int z = -1; z <= 1; z++)
                 {
-                    int hash = SpatialHash.GetHashCode(new int2(cellX + x, cellZ + z));
+                    int hash = (int)math.hash(new int2(cellX + x, cellZ + z));
 
                     if (SpatialHash.TryGetFirstValue(hash, out var neighbor, out var iterator))
                     {
