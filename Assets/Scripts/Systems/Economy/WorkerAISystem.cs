@@ -8,6 +8,7 @@ using DotsRTS.Components.Resources;
 using DotsRTS.Components.Movement;
 using DotsRTS.Components.Buildings;
 using DotsRTS.Bootstrap;
+using DotsRTS.Utilities;
 
 namespace DotsRTS.Systems.Economy
 {
@@ -153,7 +154,7 @@ namespace DotsRTS.Systems.Economy
 
             int cellX = (int)math.floor(transform.Position.x / CellSize);
             int cellZ = (int)math.floor(transform.Position.z / CellSize);
-            int hash = ResourceHash.GetHashCode(new int2(cellX, cellZ));
+            int hash = (int)math.hash(new int2(cellX, cellZ));
 
             bool isFull = resourceNode.GatherersCount >= resourceNode.MaxGatherers;
 
@@ -188,7 +189,7 @@ namespace DotsRTS.Systems.Economy
 
             int cellX = (int)math.floor(transform.Position.x / CellSize);
             int cellZ = (int)math.floor(transform.Position.z / CellSize);
-            int hash = DepositHash.GetHashCode(new int2(cellX, cellZ));
+            int hash = (int)math.hash(new int2(cellX, cellZ));
 
             DepositHash.Add(hash, new DepositInfo
             {
@@ -305,7 +306,7 @@ namespace DotsRTS.Systems.Economy
             {
                 for (int z = -searchCells; z <= searchCells; z++)
                 {
-                    int hash = ResourceHash.GetHashCode(new int2(cellX + x, cellZ + z));
+                    int hash = (int)math.hash(new int2(cellX + x, cellZ + z));
 
                     if (ResourceHash.TryGetFirstValue(hash, out var resource, out var iterator))
                     {
@@ -354,7 +355,7 @@ namespace DotsRTS.Systems.Economy
             {
                 for (int z = -searchCells; z <= searchCells; z++)
                 {
-                    int hash = DepositHash.GetHashCode(new int2(cellX + x, cellZ + z));
+                    int hash = (int)math.hash(new int2(cellX + x, cellZ + z));
 
                     if (DepositHash.TryGetFirstValue(hash, out var deposit, out var iterator))
                     {

@@ -7,6 +7,7 @@ using DotsRTS.Components.Combat;
 using DotsRTS.Components.Buildings;
 using DotsRTS.Components.Units;
 using DotsRTS.Bootstrap;
+using DotsRTS.Utilities;
 
 namespace DotsRTS.Systems.Combat
 {
@@ -167,7 +168,7 @@ namespace DotsRTS.Systems.Combat
             {
                 for (int z = -searchCells; z <= searchCells; z++)
                 {
-                    int hash = enemyHash.GetHashCode(new int2(cellX + x, cellZ + z));
+                    int hash = (int)math.hash(new int2(cellX + x, cellZ + z));
 
                     if (enemyHash.TryGetFirstValue(hash, out var enemy, out var iterator))
                     {
@@ -255,7 +256,7 @@ namespace DotsRTS.Systems.Combat
 
             int cellX = (int)math.floor(transform.Position.x / CellSize);
             int cellZ = (int)math.floor(transform.Position.z / CellSize);
-            int hash = EnemyHash.GetHashCode(new int2(cellX, cellZ));
+            int hash = (int)math.hash(new int2(cellX, cellZ));
 
             EnemyHash.Add(hash, new EnemyInfo
             {

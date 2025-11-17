@@ -30,7 +30,8 @@ namespace DotsRTS.Systems.Combat
 
             new MoveProjectilesJob
             {
-                DeltaTime = deltaTime
+                DeltaTime = deltaTime,
+                TransformLookup = SystemAPI.GetComponentLookup<LocalTransform>(true)
             }.ScheduleParallel();
         }
 
@@ -47,6 +48,7 @@ namespace DotsRTS.Systems.Combat
     public partial struct MoveProjectilesJob : IJobEntity
     {
         public float DeltaTime;
+        [ReadOnly] public ComponentLookup<LocalTransform> TransformLookup;
 
         [BurstCompile]
         private void Execute(
@@ -58,9 +60,9 @@ namespace DotsRTS.Systems.Combat
             // Update target position for homing projectiles
             if (projectileData.IsHoming && projectileData.Target != Entity.Null)
             {
-                if (SystemAPI.HasComponent<LocalTransform>(projectileData.Target))
+                if (TransformLookup.HasComponent(projectileData.Target))
                 {
-                    var targetTransform = SystemAPI.GetComponent<LocalTransform>(projectileData.Target);
+                    var targetTransform = TransformLookup[projectileData.Target];
                     projectileData.TargetPosition = targetTransform.Position;
                 }
             }
