@@ -76,6 +76,7 @@ namespace DotsRTS.Components.GameState
         public int CurrentActiveEnemies;
         public bool IsActive;
         public SpawnerType Type;
+        public Entity EnemyPrefab;
     }
 
     public enum SpawnerType : byte

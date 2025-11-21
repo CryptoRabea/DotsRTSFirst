@@ -15,6 +15,10 @@ namespace DotsRTS.Authoring
         public float spawnRadius = 5f;
         public int maxActiveEnemies = 1000;
         public bool startActive = false;
+
+        [Header("Enemy Prefab")]
+        [Tooltip("The enemy prefab to spawn (must be in a subscene or have a baker)")]
+        public GameObject enemyPrefab;
     }
 
     /// <summary>
@@ -29,6 +33,13 @@ namespace DotsRTS.Authoring
             // Add spawner tag
             AddComponent<SpawnerTag>(entity);
 
+            // Get prefab entity reference (if assigned)
+            Entity prefabEntity = Entity.Null;
+            if (authoring.enemyPrefab != null)
+            {
+                prefabEntity = GetEntity(authoring.enemyPrefab, TransformUsageFlags.Dynamic);
+            }
+
             // Add spawner data
             var transform = GetComponent<Transform>();
             AddComponent(entity, new Spawner
@@ -38,7 +49,8 @@ namespace DotsRTS.Authoring
                 MaxActiveEnemies = authoring.maxActiveEnemies,
                 CurrentActiveEnemies = 0,
                 IsActive = authoring.startActive,
-                Type = authoring.spawnerType
+                Type = authoring.spawnerType,
+                EnemyPrefab = prefabEntity
             });
         }
     }
