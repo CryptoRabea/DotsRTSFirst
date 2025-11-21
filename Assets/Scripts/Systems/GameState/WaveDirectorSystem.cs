@@ -146,12 +146,13 @@ namespace DotsRTS.Systems.GameState
             foreach (var (spawner, transform) in
                 SystemAPI.Query<RefRO<Spawner>, RefRO<LocalTransform>>())
             {
-                if (spawner.ValueRO.IsActive)
+                if (spawner.ValueRO.IsActive && spawner.ValueRO.EnemyPrefab != Entity.Null)
                 {
                     spawners.Add(new SpawnerInfo
                     {
                         Position = spawner.ValueRO.SpawnPosition,
-                        Radius = spawner.ValueRO.SpawnRadius
+                        Radius = spawner.ValueRO.SpawnRadius,
+                        EnemyPrefab = spawner.ValueRO.EnemyPrefab
                     });
                 }
             }
@@ -177,9 +178,10 @@ namespace DotsRTS.Systems.GameState
                 float2 randomOffset = RandomHelpers.RandomInCircle(ref m_Random, spawnerInfo.Radius);
                 float3 spawnPosition = spawnerInfo.Position + new float3(randomOffset.x, 0, randomOffset.y);
 
-                // Create enemy
-                CreateEnemy(
+                // Instantiate enemy from prefab
+                CreateEnemyFromPrefab(
                     ref ecb,
+                    spawnerInfo.EnemyPrefab,
                     spawnPosition,
                     waveNumber,
                     difficultyMultiplier,
@@ -194,19 +196,18 @@ namespace DotsRTS.Systems.GameState
         }
 
         /// <summary>
-        /// Create an enemy entity
+        /// Create an enemy entity from prefab
         /// </summary>
-        private void CreateEnemy(
+        private void CreateEnemyFromPrefab(
             ref EntityCommandBuffer ecb,
+            Entity prefab,
             float3 position,
             int waveNumber,
             float difficultyMultiplier,
             WaveConfig waveConfig)
         {
-            var enemy = ecb.CreateEntity();
-
-            // Determine enemy type based on wave
-            EnemyType enemyType = DetermineEnemyType(waveNumber, ref m_Random);
+            // Instantiate from prefab (this preserves all baked components including rendering)
+            var enemy = ecb.Instantiate(prefab);
 
             // Calculate scaled stats
             float baseHealth = 100f;
@@ -221,14 +222,13 @@ namespace DotsRTS.Systems.GameState
             float finalDamage = baseDamage * damageScaling * difficultyMultiplier;
             float finalSpeed = baseSpeed * speedScaling;
 
-            // Add components
-            ecb.AddComponent(enemy, LocalTransform.FromPosition(position));
-            ecb.AddComponent<EnemyTag>(enemy);
-            ecb.AddComponent<BasicEnemyTag>(enemy);
+            // Override position
+            ecb.SetComponent(enemy, LocalTransform.FromPosition(position));
 
-            ecb.AddComponent(enemy, new EnemyData
+            // Override stats that scale with wave (prefab has base values from EnemyAuthoring)
+            ecb.SetComponent(enemy, new EnemyData
             {
-                Type = enemyType,
+                Type = DetermineEnemyType(waveNumber, ref m_Random),
                 MoveSpeed = finalSpeed,
                 AttackDamage = finalDamage,
                 AttackRange = 1.5f,
@@ -238,30 +238,14 @@ namespace DotsRTS.Systems.GameState
                 ThreatLevel = 1f
             });
 
-            ecb.AddComponent(enemy, new EnemyAI
-            {
-                State = EnemyAIState.Spawning,
-                CurrentTarget = Entity.Null,
-                TargetPosition = float3.zero,
-                RetargetTimer = 0f,
-                RetargetInterval = 2f
-            });
-
-            ecb.AddComponent(enemy, new WaveData
+            ecb.SetComponent(enemy, new WaveData
             {
                 WaveNumber = waveNumber,
                 NightNumber = waveNumber,
                 SpawnTime = SystemAPI.GetSingleton<GameTime>().ElapsedTime
             });
 
-            ecb.AddComponent(enemy, new UnitOwnership
-            {
-                PlayerID = -1,
-                TeamID = -1,
-                IsPlayerControlled = false
-            });
-
-            ecb.AddComponent(enemy, new Health
+            ecb.SetComponent(enemy, new Health
             {
                 Current = finalHealth,
                 Maximum = finalHealth,
@@ -269,7 +253,7 @@ namespace DotsRTS.Systems.GameState
                 LastDamageTime = 0f
             });
 
-            ecb.AddComponent(enemy, new MovementComponent
+            ecb.SetComponent(enemy, new MovementComponent
             {
                 Velocity = float3.zero,
                 MoveSpeed = finalSpeed,
@@ -278,7 +262,7 @@ namespace DotsRTS.Systems.GameState
                 CurrentDirection = new float3(0, 0, 1)
             });
 
-            ecb.AddComponent(enemy, new MoveTarget
+            ecb.SetComponent(enemy, new MoveTarget
             {
                 Destination = float3.zero,
                 HasDestination = false,
@@ -286,7 +270,7 @@ namespace DotsRTS.Systems.GameState
                 ReachedDestination = false
             });
 
-            ecb.AddComponent(enemy, new Steering
+            ecb.SetComponent(enemy, new Steering
             {
                 DesiredVelocity = float3.zero,
                 SteeringForce = float3.zero,
@@ -297,15 +281,7 @@ namespace DotsRTS.Systems.GameState
                 CohesionWeight = 1f
             });
 
-            ecb.AddComponent(enemy, new Avoidance
-            {
-                AvoidanceRadius = 1f,
-                AvoidanceForce = 3f,
-                AvoidUnits = true,
-                AvoidBuildings = false
-            });
-
-            ecb.AddComponent(enemy, new CanAttack
+            ecb.SetComponent(enemy, new CanAttack
             {
                 AttackRange = 1.5f,
                 AttackDamage = finalDamage,
@@ -313,21 +289,6 @@ namespace DotsRTS.Systems.GameState
                 LastAttackTime = 0f,
                 DamageType = DamageType.Physical,
                 RequiresLineOfSight = false
-            });
-
-            ecb.AddComponent(enemy, new AttackTarget
-            {
-                Target = Entity.Null,
-                LastKnownPosition = float3.zero,
-                AcquisitionTime = 0f
-            });
-
-            ecb.AddComponent(enemy, new FlowFieldAgent
-            {
-                CurrentCell = int2.zero,
-                TargetCell = int2.zero,
-                FlowDirection = float3.zero,
-                UseFlowField = true
             });
         }
 
@@ -363,5 +324,6 @@ namespace DotsRTS.Systems.GameState
     {
         public float3 Position;
         public float Radius;
+        public Entity EnemyPrefab;
     }
 }
